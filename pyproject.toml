@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "fsbot"
+version = "3.0"
+description = "Convert files to shareable links on Telegram effortlessly with this bot. Upload your file, get a link, and share away!"
+authors = ["tomyprs <tomiprs25@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiohttp = "^3.9.3"
+pyrogram = "<=2.0.93"
+python-dotenv = "<=0.20.0"
+tgcrypto = "<=1.2.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
