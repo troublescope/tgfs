@@ -2,11 +2,16 @@
 # Coding : Jyothis Jayanth [@EverythingSuckz]
 
 import sys
-from os import environ
+from os import environ, path
 from dotenv import load_dotenv
 
-load_dotenv()
+# Define config name
+config_path = str("fsb.env")
 
+if path.exists(config_path):
+    load_dotenv(config_path)
+else:
+    sys.exit(f"Error: {config_path} not found. Please create the file with the required variables.")
 
 class Var(object):
     MULTI_CLIENT = False
