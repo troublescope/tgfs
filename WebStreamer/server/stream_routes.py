@@ -18,6 +18,7 @@ logger = logging.getLogger("routes")
 
 routes = web.RouteTableDef()
 
+
 @routes.get("/", allow_head=True)
 async def root_route_handler(_):
     return web.json_response(
@@ -59,14 +60,16 @@ async def stream_handler(request: web.Request):
         logger.critical(str(e), exc_info=True)
         raise web.HTTPInternalServerError(text=str(e))
 
+
 class_cache = {}
+
 
 async def media_streamer(request: web.Request, message_id: int, secure_hash: str):
     range_header = request.headers.get("Range", 0)
-    
+
     index = min(work_loads, key=work_loads.get)
     faster_client = multi_clients[index]
-    
+
     if Var.MULTI_CLIENT:
         logger.info(f"Client {index} is now serving {request.remote}")
 
@@ -80,12 +83,11 @@ async def media_streamer(request: web.Request, message_id: int, secure_hash: str
     logger.debug("before calling get_file_properties")
     file_id = await tg_connect.get_file_properties(message_id)
     logger.debug("after calling get_file_properties")
-    
-    
+
     if utils.get_hash(file_id.unique_id, Var.HASH_LENGTH) != secure_hash:
         logger.debug(f"Invalid hash for message with ID {message_id}")
         raise InvalidHash
-    
+
     file_size = file_id.file_size
 
     if range_header:

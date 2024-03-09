@@ -13,10 +13,12 @@ async def parse_file_id(message: "Message") -> Optional[FileId]:
     if media:
         return FileId.decode(media.file_id)
 
+
 async def parse_file_unique_id(message: "Messages") -> Optional[str]:
     media = get_media_from_message(message)
     if media:
         return media.file_unique_id
+
 
 async def get_file_ids(client: Client, chat_id: int, message_id: int) -> Optional[FileId]:
     message = await client.get_messages(chat_id, message_id)
@@ -30,6 +32,7 @@ async def get_file_ids(client: Client, chat_id: int, message_id: int) -> Optiona
     setattr(file_id, "file_name", getattr(media, "file_name", ""))
     setattr(file_id, "unique_id", file_unique_id)
     return file_id
+
 
 def get_media_from_message(message: "Message") -> Any:
     media_types = (
@@ -59,7 +62,6 @@ def get_hash(media_msg: Union[str, Message], length: int) -> str:
 
 
 def get_name(media_msg: Union[Message, FileId]) -> str:
-
     if isinstance(media_msg, Message):
         media = get_media_from_message(media_msg)
         file_name = getattr(media, "file_name", "")
@@ -76,9 +78,13 @@ def get_name(media_msg: Union[Message, FileId]) -> str:
             media_type = "file"
 
         formats = {
-            "photo": "jpg", "audio": "mp3", "voice": "ogg",
-            "video": "mp4", "animation": "mp4", "video_note": "mp4",
-            "sticker": "webp"
+            "photo": "jpg",
+            "audio": "mp3",
+            "voice": "ogg",
+            "video": "mp4",
+            "animation": "mp4",
+            "video_note": "mp4",
+            "sticker": "webp",
         }
 
         ext = formats.get(media_type)

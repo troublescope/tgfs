@@ -9,6 +9,7 @@ from .stream_routes import routes
 
 logger = logging.getLogger("server")
 
+
 def web_server():
     logger.info("Initializing..")
     web_app = web.Application(client_max_size=30000000)

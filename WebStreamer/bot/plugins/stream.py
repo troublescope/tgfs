@@ -11,6 +11,7 @@ from WebStreamer.vars import Var
 from WebStreamer.bot import StreamBot, logger
 from WebStreamer.utils import get_hash, get_name
 
+
 @StreamBot.on_message(
     filters.private
     & (
@@ -34,12 +35,12 @@ async def media_receive_handler(_, m: Message) -> None:
 
     # Forward the media message to the specified channel
     log_msg: Message = await m.forward(chat_id=Var.BIN_CHANNEL)
-    
+
     # Generate file hash and stream link
     file_hash: str = get_hash(log_msg, Var.HASH_LENGTH)
     stream_link: str = f"{Var.URL}{log_msg.id}/{quote_plus(get_name(m))}?hash={file_hash}"
     short_link: str = f"{Var.URL}delta/{file_hash}{log_msg.id}"
-    
+
     # Log the generated link
     logger.info(f"Generated link: {stream_link} for {user.first_name}")
 

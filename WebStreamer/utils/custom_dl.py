@@ -13,6 +13,7 @@ from pyrogram.file_id import FileId, FileType, ThumbnailSource
 
 logger = logging.getLogger("streamer")
 
+
 class ByteStreamer:
     def __init__(self, client: Client):
         """A custom class that holds the cache of a specific client and class functions.
@@ -20,12 +21,12 @@ class ByteStreamer:
             client: the client that the cache is for.
             cached_file_ids: a dict of cached file IDs.
             cached_file_properties: a dict of cached file properties.
-        
+
         functions:
             generate_file_properties: returns the properties for a media of a specific message contained in Tuple.
             generate_media_session: returns the media session for the DC that contains the media file.
             yield_file: yield a file from telegram servers for streaming.
-            
+
         This is a modified version of the <https://github.com/eyaadh/megadlbot_oss/blob/master/mega/telegram/utils/custom_download.py>
         Thanks to Eyaadh <https://github.com/eyaadh>
         """
@@ -44,7 +45,7 @@ class ByteStreamer:
             await self.generate_file_properties(message_id)
             logger.debug(f"Cached file properties for message with ID {message_id}")
         return self.cached_file_ids[message_id]
-    
+
     async def generate_file_properties(self, message_id: int) -> FileId:
         """
         Generates the properties of a media file on a specific message.
@@ -72,9 +73,7 @@ class ByteStreamer:
                 media_session = Session(
                     client,
                     file_id.dc_id,
-                    await Auth(
-                        client, file_id.dc_id, await client.storage.test_mode()
-                    ).create(),
+                    await Auth(client, file_id.dc_id, await client.storage.test_mode()).create(),
                     await client.storage.test_mode(),
                     is_media=True,
                 )
@@ -93,9 +92,7 @@ class ByteStreamer:
                         )
                         break
                     except AuthBytesInvalid:
-                        logger.debug(
-                            f"Invalid authorization bytes for DC {file_id.dc_id}"
-                        )
+                        logger.debug(f"Invalid authorization bytes for DC {file_id.dc_id}")
                         continue
                 else:
                     await media_session.stop()
@@ -115,11 +112,14 @@ class ByteStreamer:
             logger.debug(f"Using cached media session for DC {file_id.dc_id}")
         return media_session
 
-
     @staticmethod
-    async def get_location(file_id: FileId) -> Union[raw.types.InputPhotoFileLocation,
-                                                     raw.types.InputDocumentFileLocation,
-                                                     raw.types.InputPeerPhotoFileLocation,]:
+    async def get_location(
+        file_id: FileId,
+    ) -> Union[
+        raw.types.InputPhotoFileLocation,
+        raw.types.InputDocumentFileLocation,
+        raw.types.InputPeerPhotoFileLocation,
+    ]:
         """
         Returns the file location for the media file.
         """
@@ -186,9 +186,7 @@ class ByteStreamer:
 
         try:
             r = await media_session.invoke(
-                raw.functions.upload.GetFile(
-                    location=location, offset=offset, limit=chunk_size
-                ),
+                raw.functions.upload.GetFile(location=location, offset=offset, limit=chunk_size),
             )
             if isinstance(r, raw.types.upload.File):
                 while True:
@@ -221,7 +219,6 @@ class ByteStreamer:
             logger.debug(f"Finished yielding file with {current_part} parts.")
             work_loads[index] -= 1
 
-    
     async def clean_cache(self) -> None:
         """
         function to clean the cache to reduce memory usage

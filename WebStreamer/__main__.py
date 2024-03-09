@@ -17,8 +17,11 @@ logging.basicConfig(
     level=logging.DEBUG if Var.DEBUG else logging.INFO,
     datefmt="%d/%m/%Y %H:%M:%S",
     format="[%(asctime)s][%(name)s][%(levelname)s] ==> %(message)s",
-    handlers=[logging.StreamHandler(stream=sys.stdout),
-              logging.FileHandler("streambot.log", mode="a", encoding="utf-8")],)
+    handlers=[
+        logging.StreamHandler(stream=sys.stdout),
+        logging.FileHandler("streambot.log", mode="a", encoding="utf-8"),
+    ],
+)
 
 logging.getLogger("aiohttp").setLevel(logging.DEBUG if Var.DEBUG else logging.ERROR)
 logging.getLogger("pyrogram").setLevel(logging.INFO if Var.DEBUG else logging.ERROR)
@@ -27,7 +30,6 @@ logging.getLogger("aiohttp.web").setLevel(logging.DEBUG if Var.DEBUG else loggin
 server = web.AppRunner(web_server())
 
 loop = asyncio.get_event_loop()
-
 
 
 async def start_services():
@@ -49,9 +51,11 @@ async def start_services():
     logging.info("URL =>> {}".format(Var.URL))
     await idle()
 
+
 async def cleanup():
     await server.cleanup()
     await StreamBot.stop()
+
 
 if __name__ == "__main__":
     try:

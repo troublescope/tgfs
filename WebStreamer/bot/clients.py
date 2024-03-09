@@ -10,21 +10,20 @@ from . import multi_clients, work_loads, sessions_dir, StreamBot
 
 logger = logging.getLogger("multi_client")
 
+
 async def initialize_clients():
     multi_clients[0] = StreamBot
     work_loads[0] = 0
     all_tokens = dict(
         (c + 1, t)
         for c, (_, t) in enumerate(
-            filter(
-                lambda n: n[0].startswith("MULTI_TOKEN"), sorted(environ.items())
-            )
+            filter(lambda n: n[0].startswith("MULTI_TOKEN"), sorted(environ.items()))
         )
     )
     if not all_tokens:
         logger.info("No additional clients found, using default client")
         return
-    
+
     async def start_client(client_id, token):
         try:
             logger.info(f"Starting - Client {client_id}")
@@ -45,7 +44,7 @@ async def initialize_clients():
             return client_id, client
         except Exception:
             logger.error(f"Failed starting Client - {client_id} Error:", exc_info=True)
-    
+
     clients = await asyncio.gather(*[start_client(i, token) for i, token in all_tokens.items()])
     multi_clients.update(dict(clients))
     if len(multi_clients) != 1:
